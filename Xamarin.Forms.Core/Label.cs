@@ -244,7 +244,7 @@ namespace Xamarin.Forms
 			void RemoveItems()
 			{
 				for (int i = 0; i < e.OldItems.Count; i++)
-					SetupSpanGestureRecognizers((Span)e.OldItems[i], this);
+					TearDownSpanGestureRecognizers((Span)e.OldItems[i]);
 			}
 		}
 
