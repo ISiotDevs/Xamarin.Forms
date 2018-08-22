@@ -73,8 +73,10 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void TextBoxGotFocus(object sender, RoutedEventArgs e)
 		{
-			UpdateCursorPosition();
-			UpdateSelectionLength();
+			_nativeSelectionIsUpdating = true;
+			ElementController?.SetValueFromRenderer(Entry.CursorPositionProperty, Control.SelectionStart);
+			ElementController?.SetValueFromRenderer(Entry.SelectionLengthProperty, Control.SelectionLength);
+			_nativeSelectionIsUpdating = false;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -372,7 +374,6 @@ namespace Xamarin.Forms.Platform.UWP
 					start = Math.Min(Control.Text.Length, cursorPosition);
 				else
 					start = Control.Text.Length;
-
 
 				if (start != cursorPosition)
 				{
