@@ -73,6 +73,12 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void TextBoxGotFocus(object sender, RoutedEventArgs e)
 		{
+			if (_cursorPositionChangePending)
+				UpdateCursorPosition();
+
+			if (_selectionLengthChangePending)
+				UpdateSelectionLength();
+
 			_nativeSelectionIsUpdating = true;
 			ElementController?.SetValueFromRenderer(Entry.CursorPositionProperty, Control.SelectionStart);
 			ElementController?.SetValueFromRenderer(Entry.SelectionLengthProperty, Control.SelectionLength);
