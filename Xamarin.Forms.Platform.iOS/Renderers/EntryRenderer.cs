@@ -177,7 +177,9 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void OnEditingBegan(object sender, EventArgs e)
 		{
-			UpdateCursorSelection();
+			if (_cursorPositionChangePending || _selectionLengthChangePending)
+				UpdateCursorSelection();
+
 			ElementController.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, true);
 		}
 
@@ -333,25 +335,27 @@ namespace Xamarin.Forms.Platform.iOS
 				return;
 
 			var currentSelection = Control.SelectedTextRange;
-
-			if (!_cursorPositionChangePending)
+			if (currentSelection != null)
 			{
-				int newCursorPosition = (int)Control.GetOffsetFromPosition(Control.BeginningOfDocument, currentSelection.Start);
-				if (newCursorPosition != Element.CursorPosition)
+				if (!_cursorPositionChangePending)
 				{
-					_nativeSelectionIsUpdating = true;
-					ElementController?.SetValueFromRenderer(Entry.CursorPositionProperty, newCursorPosition);
+					int newCursorPosition = (int)Control.GetOffsetFromPosition(Control.BeginningOfDocument, currentSelection.Start);
+					if (newCursorPosition != Element.CursorPosition)
+					{
+						_nativeSelectionIsUpdating = true;
+						ElementController?.SetValueFromRenderer(Entry.CursorPositionProperty, newCursorPosition);
+					}
 				}
-			}
 
-			if (!_selectionLengthChangePending)
-			{
-				int selectionLength = (int)Control.GetOffsetFromPosition(currentSelection.Start, currentSelection.End);
-
-				if (selectionLength != Element.SelectionLength)
+				if (!_selectionLengthChangePending)
 				{
-					_nativeSelectionIsUpdating = true;
-					ElementController?.SetValueFromRenderer(Entry.SelectionLengthProperty, selectionLength);
+					int selectionLength = (int)Control.GetOffsetFromPosition(currentSelection.Start, currentSelection.End);
+
+					if (selectionLength != Element.SelectionLength)
+					{
+						_nativeSelectionIsUpdating = true;
+						ElementController?.SetValueFromRenderer(Entry.SelectionLengthProperty, selectionLength);
+					}
 				}
 			}
 
