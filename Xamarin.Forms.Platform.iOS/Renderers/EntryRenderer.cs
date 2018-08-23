@@ -180,6 +180,8 @@ namespace Xamarin.Forms.Platform.iOS
 			if (_cursorPositionChangePending || _selectionLengthChangePending)
 				UpdateCursorSelection();
 
+			UpdateCursorFromControl(null);
+
 			ElementController.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, true);
 		}
 
